@@ -1,6 +1,7 @@
 const loginForm = document.getElementById('loginForm');
 const signupForm = document.getElementById('signupForm');
 const authStatus = document.getElementById('authStatus');
+const logoutBtn = document.getElementById('logoutBtn');
 const showLogin = document.getElementById('showLogin');
 const showSignup = document.getElementById('showSignup');
 const currencySelect = document.getElementById('currency');
@@ -68,6 +69,7 @@ const FALLBACK_PRODUCTS = [
 let products = [];
 let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 let activeTab = 'all';
+let currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
 
 function formatPrice(value, currency = 'USD') {
   const amount = Number(value) * (RATES[currency] || 1);
@@ -86,6 +88,26 @@ function saveCart() {
 function setAuthMessage(text, ok = true) {
   authStatus.textContent = text;
   authStatus.style.color = ok ? '#16a34a' : '#b91c1c';
+}
+
+function syncAuthUI() {
+  const isLoggedIn = Boolean(currentUser);
+
+  logoutBtn.classList.toggle('hidden', !isLoggedIn);
+  showLogin.classList.toggle('hidden', isLoggedIn);
+  showSignup.classList.toggle('hidden', isLoggedIn);
+
+  if (isLoggedIn) {
+    loginForm.classList.add('hidden');
+    signupForm.classList.add('hidden');
+    setAuthMessage(`Logged in as ${currentUser.name}.`);
+  } else {
+    showLogin.classList.add('active');
+    showSignup.classList.remove('active');
+    loginForm.classList.remove('hidden');
+    signupForm.classList.add('hidden');
+    setAuthMessage('Not logged in.', false);
+  }
 }
 
 function normalizeProducts(apiProducts) {
@@ -133,6 +155,11 @@ function renderProducts() {
 
   container.querySelectorAll('.add').forEach((button) => {
     button.addEventListener('click', () => {
+      if (!currentUser) {
+        alert('You must be logged in to add items to cart.');
+        return;
+      }
+
       const product = products.find((p) => String(p.id) === button.dataset.id);
       if (!product) {
         return;
@@ -230,7 +257,10 @@ signupForm.addEventListener('submit', async (event) => {
       email: form.get('email'),
       password: form.get('password')
     });
+    currentUser = { name: result.name, email: result.email ?? form.get('email') };
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
     setAuthMessage(`Welcome ${result.name}, your account is ready.`);
+    syncAuthUI();
     signupForm.reset();
   } catch {
     setAuthMessage('Signup failed. Try a different email.', false);
@@ -246,11 +276,20 @@ loginForm.addEventListener('submit', async (event) => {
       email: form.get('email'),
       password: form.get('password')
     });
+    currentUser = { name: result.name, email: result.email ?? form.get('email') };
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
     setAuthMessage(`Welcome back ${result.name}.`);
+    syncAuthUI();
     loginForm.reset();
   } catch {
     setAuthMessage('Login failed. Check your credentials.', false);
   }
+});
+
+logoutBtn.addEventListener('click', () => {
+  currentUser = null;
+  localStorage.removeItem('currentUser');
+  syncAuthUI();
 });
 
 currencySelect.addEventListener('change', () => {
@@ -294,3 +333,4 @@ async function loadProducts() {
 }
 
 loadProducts();
+syncAuthUI();

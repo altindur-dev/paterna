@@ -3,97 +3,100 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Paterna Store</title>
+  <title>Paterna · Modern Storefront</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="hero">
-    <nav class="nav">
-      <div class="brand">
-        <h1>Paterna</h1>
-        <small>Global Products · Ship Worldwide</small>
+    <nav class="nav wrapper">
+      <a href="#" class="logo">paterna<span>.</span></a>
+      <div class="nav-links">
+        <a href="#productsSection">Products</a>
+        <a href="#authSection">Account</a>
+        <a href="#">About</a>
       </div>
       <div class="nav-actions">
-        <input id="search" placeholder="Search products, e.g. lamp" />
-        <label for="currency">Currency</label>
-        <select id="currency">
+        <select id="currency" aria-label="Currency">
           <option value="USD">USD</option>
           <option value="EUR">EUR</option>
           <option value="GBP">GBP</option>
         </select>
-        <button id="cartBtn">Cart (<span id="cartCount">0</span>)</button>
+        <button id="cartBtn" class="btn btn-dark">Cart <span id="cartCount">0</span></button>
       </div>
     </nav>
-    <div class="hero-content">
-      <h2>Design-forward products for global makers</h2>
-      <p class="lead">Curated selection inspired by modern software architecture and classic design patterns.</p>
-      <div class="hero-cta">
-        <button id="shopNow">Shop Now</button>
-        <button id="learnMore" class="ghost">Learn Arkitektura</button>
+
+    <div class="hero-content wrapper">
+      <div class="hero-copy">
+        <p class="eyebrow">Modern essentials</p>
+        <h1>Build a beautiful setup with premium products.</h1>
+        <p class="lead">Shop curated furniture, desk accessories, and lifestyle items with a clean, modern experience.</p>
+        <div class="hero-cta">
+          <a href="#productsSection" class="btn btn-dark">Shop now</a>
+          <a href="#authSection" class="btn btn-light">Create account</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <img src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1200&q=80" alt="Modern workspace" loading="eager" />
       </div>
     </div>
   </header>
 
-  <main>
-    <section class="card auth">
-      <h2>Login / Signup</h2>
-      <div class="tabs">
+  <main class="wrapper main-grid">
+    <section id="authSection" class="panel auth-panel">
+      <div class="panel-head">
+        <h2>Login / Signup</h2>
+        <p id="authStatus">Not logged in.</p>
+      </div>
+
+      <div class="tabs auth-tabs">
         <button id="showLogin" class="active">Login</button>
         <button id="showSignup">Signup</button>
       </div>
 
-      <form id="loginForm">
+      <form id="loginForm" class="form">
         <input name="email" type="email" placeholder="Email" required />
         <input name="password" type="password" placeholder="Password" required />
-        <button type="submit">Login</button>
+        <button type="submit" class="btn btn-dark">Login</button>
       </form>
 
-      <form id="signupForm" class="hidden">
+      <form id="signupForm" class="form hidden">
         <input name="name" type="text" placeholder="Full name" required />
         <input name="email" type="email" placeholder="Email" required />
-        <input name="password" type="password" placeholder="Password" required />
-        <button type="submit">Signup</button>
+        <input name="password" type="password" placeholder="Password" required minlength="6" />
+        <button type="submit" class="btn btn-dark">Create account</button>
       </form>
-
-      <p id="authStatus"></p>
     </section>
 
-    <section class="card products-card">
+    <section id="productsSection" class="panel products-panel">
       <div class="controls">
-        <div class="tabs">
+        <div class="tabs" id="categoryTabs">
           <button class="tab active" data-tab="all">All</button>
-          <button class="tab" data-tab="architectures">Architectures</button>
-          <button class="tab" data-tab="patterns">Patterns</button>
           <button class="tab" data-tab="featured">Featured</button>
+          <button class="tab" data-tab="desk">Desk</button>
+          <button class="tab" data-tab="living">Living</button>
         </div>
-
-        <div class="filters">
-          <label>Arkitektura</label>
-          <select id="filterArchitecture">
-            <option value="">Any</option>
-          </select>
-
-          <label>Paternat</label>
-          <select id="filterPattern">
-            <option value="">Any</option>
-          </select>
+        <div class="search-wrap">
+          <input id="search" placeholder="Search products" />
         </div>
       </div>
-
-      <h2 id="productsTitle">Products</h2>
       <div id="products" class="products"></div>
     </section>
-
-    <aside id="cart" class="cart hidden">
-      <h3>Your Cart</h3>
-      <div id="cartItems" class="cart-items"></div>
-      <div class="cart-footer">
-        <div class="total">Total: <span id="cartTotal">$0.00</span></div>
-        <button id="checkout">Checkout</button>
-      </div>
-      <button id="closeCart" class="close-cart">Close</button>
-    </aside>
   </main>
+
+  <aside id="cart" class="cart hidden" aria-label="Shopping cart">
+    <div class="cart-head">
+      <h3>Your cart</h3>
+      <button id="closeCart" class="icon-btn">✕</button>
+    </div>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="cart-footer">
+      <p>Total: <strong id="cartTotal">$0.00</strong></p>
+      <button id="checkout" class="btn btn-dark">Checkout</button>
+    </div>
+  </aside>
 
   <script src="app.js"></script>
 </body>

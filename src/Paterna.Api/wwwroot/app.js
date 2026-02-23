@@ -1,10 +1,8 @@
 const loginForm = document.getElementById('loginForm');
 const signupForm = document.getElementById('signupForm');
 const authStatus = document.getElementById('authStatus');
-
 const showLogin = document.getElementById('showLogin');
 const showSignup = document.getElementById('showSignup');
-
 const currencySelect = document.getElementById('currency');
 const cartBtn = document.getElementById('cartBtn');
 const cartEl = document.getElementById('cart');
@@ -13,224 +11,286 @@ const cartItemsEl = document.getElementById('cartItems');
 const cartTotalEl = document.getElementById('cartTotal');
 const closeCart = document.getElementById('closeCart');
 const checkoutBtn = document.getElementById('checkout');
+const searchInput = document.getElementById('search');
 
-showLogin.onclick = () => {
-  showLogin.classList.add('active');
-  showSignup.classList.remove('active');
-  loginForm.classList.remove('hidden');
-  signupForm.classList.add('hidden');
-};
+const RATES = { USD: 1, EUR: 0.92, GBP: 0.79 };
+const FALLBACK_PRODUCTS = [
+  {
+    id: 'p1',
+    name: 'Arc Floor Lamp',
+    description: 'Soft ambient light for modern rooms.',
+    price: 129,
+    category: 'living',
+    image: 'https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=900&q=80'
+  },
+  {
+    id: 'p2',
+    name: 'Walnut Desk',
+    description: 'Premium wooden desk with clean lines.',
+    price: 399,
+    category: 'desk',
+    image: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=900&q=80'
+  },
+  {
+    id: 'p3',
+    name: 'Ceramic Vase',
+    description: 'Minimal sculptural décor piece.',
+    price: 59,
+    category: 'living',
+    image: 'https://images.unsplash.com/photo-1616628182509-6f57f4f0f510?auto=format&fit=crop&w=900&q=80'
+  },
+  {
+    id: 'p4',
+    name: 'Mechanical Keyboard',
+    description: 'Tactile typing for focused work.',
+    price: 145,
+    category: 'desk',
+    image: 'https://images.unsplash.com/photo-1593642634367-d91a135587b5?auto=format&fit=crop&w=900&q=80'
+  },
+  {
+    id: 'p5',
+    name: 'Lounge Chair',
+    description: 'Comfortable accent chair in boucle.',
+    price: 279,
+    category: 'living',
+    image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80'
+  },
+  {
+    id: 'p6',
+    name: 'Desk Organizer',
+    description: 'Keep essentials clean and sorted.',
+    price: 35,
+    category: 'desk',
+    image: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=900&q=80'
+  }
+];
 
-showSignup.onclick = () => {
-  showSignup.classList.add('active');
-  showLogin.classList.remove('active');
-  signupForm.classList.remove('hidden');
-  loginForm.classList.add('hidden');
-};
+let products = [];
+let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+let activeTab = 'all';
 
-async function send(url, payload) {
-  const res = await fetch(url, {
+function formatPrice(value, currency = 'USD') {
+  const amount = Number(value) * (RATES[currency] || 1);
+  return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(amount);
+}
+
+function updateCartCount() {
+  cartCount.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
+}
+
+function saveCart() {
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCartCount();
+}
+
+function setAuthMessage(text, ok = true) {
+  authStatus.textContent = text;
+  authStatus.style.color = ok ? '#16a34a' : '#b91c1c';
+}
+
+function normalizeProducts(apiProducts) {
+  const mapped = (Array.isArray(apiProducts) ? apiProducts : []).map((p, i) => ({
+    id: p.id ?? `api-${i}`,
+    name: p.name,
+    description: p.description,
+    price: p.price,
+    category: i % 2 === 0 ? 'desk' : 'living',
+    image: `https://picsum.photos/seed/${encodeURIComponent(p.name + i)}/900/600`
+  }));
+
+  return [...mapped, ...FALLBACK_PRODUCTS].slice(0, 12);
+}
+
+function renderProducts() {
+  const container = document.getElementById('products');
+  const q = searchInput.value.trim().toLowerCase();
+
+  let list = products.slice();
+  if (activeTab !== 'all' && activeTab !== 'featured') {
+    list = list.filter((p) => p.category === activeTab);
+  }
+  if (activeTab === 'featured') {
+    list = list.slice(0, 4);
+  }
+  if (q) {
+    list = list.filter((p) => `${p.name} ${p.description}`.toLowerCase().includes(q));
+  }
+
+  container.innerHTML = list.map((p) => `
+    <article class="product">
+      <img src="${p.image}" alt="${p.name}" loading="lazy" />
+      <div class="product-body">
+        <div class="product-head">
+          <strong>${p.name}</strong>
+          <span class="price">${formatPrice(p.price, currencySelect.value)}</span>
+        </div>
+        <p>${p.description}</p>
+        <span class="badge">${p.category === 'desk' ? 'Desk' : 'Living'}</span>
+        <button class="btn btn-dark add" data-id="${p.id}">Add to cart</button>
+      </div>
+    </article>
+  `).join('');
+
+  container.querySelectorAll('.add').forEach((button) => {
+    button.addEventListener('click', () => {
+      const product = products.find((p) => String(p.id) === button.dataset.id);
+      if (!product) {
+        return;
+      }
+      const existing = cart.find((item) => String(item.id) === String(product.id));
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ id: product.id, name: product.name, price: product.price, qty: 1 });
+      }
+      saveCart();
+      renderCart();
+    });
+  });
+}
+
+function renderCart() {
+  if (cart.length === 0) {
+    cartItemsEl.innerHTML = '<p class="empty">Your cart is empty.</p>';
+  } else {
+    cartItemsEl.innerHTML = cart.map((item) => `
+      <div class="cart-item">
+        <div>
+          <strong>${item.name}</strong>
+          <div>${formatPrice(item.price, currencySelect.value)} × ${item.qty}</div>
+        </div>
+        <div>
+          <div>${formatPrice(item.price * item.qty, currencySelect.value)}</div>
+          <div class="cart-actions">
+            <button data-op="dec" data-id="${item.id}">−</button>
+            <button data-op="inc" data-id="${item.id}">+</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  cartTotalEl.textContent = formatPrice(cart.reduce((sum, item) => sum + item.price * item.qty, 0), currencySelect.value);
+
+  cartItemsEl.querySelectorAll('button').forEach((button) => {
+    button.addEventListener('click', () => {
+      const item = cart.find((x) => String(x.id) === button.dataset.id);
+      if (!item) {
+        return;
+      }
+      if (button.dataset.op === 'inc') {
+        item.qty += 1;
+      } else {
+        item.qty -= 1;
+      }
+      if (item.qty <= 0) {
+        cart = cart.filter((x) => String(x.id) !== String(item.id));
+      }
+      saveCart();
+      renderCart();
+    });
+  });
+}
+
+async function sendAuth(url, payload) {
+  const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   });
 
-  if (!res.ok) throw new Error('Authentication failed');
-  return res.json();
+  if (!response.ok) {
+    throw new Error('Authentication request failed');
+  }
+
+  return response.json();
 }
 
-signupForm.onsubmit = async (e) => {
-  e.preventDefault();
+showLogin.addEventListener('click', () => {
+  showLogin.classList.add('active');
+  showSignup.classList.remove('active');
+  loginForm.classList.remove('hidden');
+  signupForm.classList.add('hidden');
+});
+
+showSignup.addEventListener('click', () => {
+  showSignup.classList.add('active');
+  showLogin.classList.remove('active');
+  signupForm.classList.remove('hidden');
+  loginForm.classList.add('hidden');
+});
+
+signupForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
   const form = new FormData(signupForm);
 
   try {
-    const result = await send('/api/auth/signup', {
+    const result = await sendAuth('/api/auth/signup', {
       name: form.get('name'),
       email: form.get('email'),
       password: form.get('password')
     });
-
-    authStatus.textContent = `Welcome ${result.name}! Account created.`;
+    setAuthMessage(`Welcome ${result.name}, your account is ready.`);
+    signupForm.reset();
   } catch {
-    authStatus.textContent = 'Signup failed. Try another email.';
+    setAuthMessage('Signup failed. Try a different email.', false);
   }
-};
+});
 
-loginForm.onsubmit = async (e) => {
-  e.preventDefault();
+loginForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
   const form = new FormData(loginForm);
 
   try {
-    const result = await send('/api/auth/login', {
+    const result = await sendAuth('/api/auth/login', {
       email: form.get('email'),
       password: form.get('password')
     });
-
-    authStatus.textContent = `Welcome back ${result.name}!`;
+    setAuthMessage(`Welcome back ${result.name}.`);
+    loginForm.reset();
   } catch {
-    // --- Cart & Products ---
-    const RATES = { USD: 1, EUR: 0.92, GBP: 0.79 };
-    let products = [];
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    setAuthMessage('Login failed. Check your credentials.', false);
+  }
+});
 
-    const ARCHITECTURES = [
-      'Hexagonal architecture',
-      'Onion architecture',
-      'Serverless architecture'
-    ];
+currencySelect.addEventListener('change', () => {
+  renderProducts();
+  renderCart();
+});
 
-    const PATTERNS = [
-      'Creational Patterns',
-      'Structural Patterns',
-      'Behavioural Patterns'
-    ];
+searchInput.addEventListener('input', renderProducts);
 
-    function saveCart() {
-      localStorage.setItem('cart', JSON.stringify(cart));
-      cartCount.textContent = cart.reduce((s, i) => s + i.qty, 0);
-    }
+document.querySelectorAll('.tab').forEach((button) => {
+  button.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach((x) => x.classList.remove('active'));
+    button.classList.add('active');
+    activeTab = button.dataset.tab;
+    renderProducts();
+  });
+});
 
-    function formatPrice(value, currency = 'USD') {
-      const amount = Number(value) * (RATES[currency] || 1);
-      return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(amount);
-    }
+cartBtn.addEventListener('click', () => cartEl.classList.toggle('hidden'));
+closeCart.addEventListener('click', () => cartEl.classList.add('hidden'));
+checkoutBtn.addEventListener('click', () => {
+  if (cart.length === 0) {
+    alert('Your cart is empty.');
+    return;
+  }
+  alert('Checkout flow is ready for backend integration.');
+});
 
-    function enrichProducts(list) {
-      // create several demo products if backend list is small
-      const extra = [
-        { name: 'Modular Shelf', description: 'Floating shelf system for flexible layouts', price: 120 },
-        { name: 'Sketch Notebook', description: 'Dot-grid notebook for ideation', price: 12 },
-        { name: 'Precision Ruler', description: 'Stainless ruler with laser-etched marks', price: 25 },
-        { name: 'Parcel Pack', description: 'Eco packaging kit for safe shipping', price: 18 },
-        { name: 'Studio Lamp', description: 'Adjustable light with warm tones', price: 95 }
-      ];
+async function loadProducts() {
+  try {
+    const response = await fetch('/api/products');
+    const data = await response.json();
+    products = normalizeProducts(data);
+  } catch {
+    products = FALLBACK_PRODUCTS;
+  }
 
-      const base = list.slice();
-      if (base.length < 6) base.push(...extra.slice(0, 6 - base.length));
+  saveCart();
+  renderProducts();
+  renderCart();
+}
 
-      // assign architecture and pattern tags and image seed
-      return base.map((p, i) => ({
-        id: p.id ?? Math.random().toString(36).slice(2, 9),
-        name: p.name,
-        description: p.description,
-        price: p.price ?? p.Price ?? (10 + i * 15),
-        architecture: ARCHITECTURES[i % ARCHITECTURES.length],
-        pattern: PATTERNS[i % PATTERNS.length],
-        image: `https://picsum.photos/seed/${encodeURIComponent((p.name || 'item') + i)}/600/400`
-      }));
-    }
-
-    function populateFilters() {
-      const archSel = document.getElementById('filterArchitecture');
-      const patSel = document.getElementById('filterPattern');
-      ARCHITECTURES.forEach(a => archSel.insertAdjacentHTML('beforeend', `<option value="${a}">${a}</option>`));
-      PATTERNS.forEach(p => patSel.insertAdjacentHTML('beforeend', `<option value="${p}">${p}</option>`));
-    }
-
-    function renderProducts(activeTab = 'all', architecture = '', pattern = '', q = '') {
-      const container = document.getElementById('products');
-      let list = products.slice();
-      if (architecture) list = list.filter(p => p.architecture === architecture);
-      if (pattern) list = list.filter(p => p.pattern === pattern);
-      if (q) list = list.filter(p => (p.name + ' ' + p.description).toLowerCase().includes(q.toLowerCase()));
-
-      if (activeTab === 'architectures') {
-        document.getElementById('productsTitle').textContent = 'By Arkitektura';
-      } else if (activeTab === 'patterns') {
-        document.getElementById('productsTitle').textContent = 'By Paternat';
-      } else if (activeTab === 'featured') {
-        document.getElementById('productsTitle').textContent = 'Featured';
-        list = list.slice(0, 6);
-      } else {
-        document.getElementById('productsTitle').textContent = 'Products';
-      }
-
-      container.innerHTML = list.map(p => `
-        <article class="product">
-          <div class="thumb"><img src="${p.image}" alt="${p.name}" loading="lazy"/></div>
-          <div>
-            <div class="meta"><h3>${p.name}</h3><div class="price">${formatPrice(p.price, currencySelect.value)}</div></div>
-            <p class="details">${p.description}</p>
-            <div style="margin-top:.5rem;font-size:.85rem;color:#6b7280">${p.architecture} · ${p.pattern}</div>
-          </div>
-          <div class="actions">
-            <button class="add" data-id="${p.id}">Add to cart</button>
-          </div>
-        </article>
-      `).join('');
-
-      // Attach add handlers
-      document.querySelectorAll('.add').forEach(btn => {
-        btn.onclick = () => {
-          const id = btn.getAttribute('data-id');
-          const prod = products.find(x => String(x.id) === String(id));
-          if (!prod) return;
-          const existing = cart.find(i => String(i.id) === String(id));
-          if (existing) existing.qty += 1; else cart.push({ id: prod.id, name: prod.name, price: prod.price, qty: 1 });
-          saveCart();
-          renderCart();
-        };
-      });
-    }
-
-    function renderCart() {
-      cartItemsEl.innerHTML = '';
-      cart.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'cart-item';
-        div.innerHTML = `
-          <div>
-            <div style="font-weight:600">${item.name}</div>
-            <div style="font-size:.9rem;color:#6b7280">${formatPrice(item.price, currencySelect.value)} × ${item.qty}</div>
-          </div>
-          <div>
-            <div style="text-align:right">${formatPrice(item.price * item.qty, currencySelect.value)}</div>
-            <div style="display:flex;gap:.3rem;margin-top:.4rem"><button data-op="dec" data-id="${item.id}">-</button><button data-op="inc" data-id="${item.id}">+</button></div>
-          </div>
-        `;
-        cartItemsEl.appendChild(div);
-      });
-
-      cartTotalEl.textContent = formatPrice(cart.reduce((s,i)=>s + i.price * i.qty, 0), currencySelect.value);
-
-      // buttons
-      cartItemsEl.querySelectorAll('button').forEach(b => {
-        b.onclick = () => {
-          const id = b.getAttribute('data-id');
-          const op = b.getAttribute('data-op');
-          const it = cart.find(i => String(i.id) === String(id));
-          if (!it) return;
-          if (op === 'inc') it.qty += 1; else it.qty -= 1;
-          if (it.qty <= 0) cart = cart.filter(x => String(x.id) !== String(id));
-          saveCart(); renderCart();
-        };
-      });
-    }
-
-    async function loadProducts() {
-      const res = await fetch('/api/products');
-      const data = await res.json();
-      products = enrichProducts(Array.from(data));
-      populateFilters();
-      renderProducts('all');
-      saveCart();
-      renderCart();
-
-      // setup tabs
-      document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
-        document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-        t.classList.add('active');
-        renderProducts(t.getAttribute('data-tab'), document.getElementById('filterArchitecture').value, document.getElementById('filterPattern').value, document.getElementById('search').value);
-      });
-
-      document.getElementById('filterArchitecture').onchange = (e) => renderProducts(document.querySelector('.tab.active').getAttribute('data-tab'), e.target.value, document.getElementById('filterPattern').value, document.getElementById('search').value);
-      document.getElementById('filterPattern').onchange = (e) => renderProducts(document.querySelector('.tab.active').getAttribute('data-tab'), document.getElementById('filterArchitecture').value, e.target.value, document.getElementById('search').value);
-      document.getElementById('search').oninput = (e) => renderProducts(document.querySelector('.tab.active').getAttribute('data-tab'), document.getElementById('filterArchitecture').value, document.getElementById('filterPattern').value, e.target.value);
-    }
-
-    currencySelect.onchange = () => { renderProducts(document.querySelector('.tab.active').getAttribute('data-tab'), document.getElementById('filterArchitecture').value, document.getElementById('filterPattern').value, document.getElementById('search').value); renderCart(); };
-    cartBtn.onclick = () => cartEl.classList.toggle('hidden');
-    closeCart.onclick = () => cartEl.classList.add('hidden');
-    checkoutBtn.onclick = () => alert('Checkout not implemented in demo.');
-
-    loadProducts();
+loadProducts();

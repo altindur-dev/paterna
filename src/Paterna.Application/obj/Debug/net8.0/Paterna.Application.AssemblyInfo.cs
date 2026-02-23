@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Paterna.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+11c944164d8c9345bef7aae6524b7800bb0e33a6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c51158b38644bd389363d0753be454471530d6c9")]
 [assembly: System.Reflection.AssemblyProductAttribute("Paterna.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Paterna.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

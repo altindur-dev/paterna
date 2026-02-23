@@ -11,9 +11,10 @@
     <nav class="nav">
       <div class="brand">
         <h1>Paterna</h1>
-        <small>Global Products</small>
+        <small>Global Products · Ship Worldwide</small>
       </div>
       <div class="nav-actions">
+        <input id="search" placeholder="Search products, e.g. lamp" />
         <label for="currency">Currency</label>
         <select id="currency">
           <option value="USD">USD</option>
@@ -24,8 +25,12 @@
       </div>
     </nav>
     <div class="hero-content">
-      <h2>Paterna Store</h2>
-      <p>Architecture-inspired products for modern makers — shipping worldwide.</p>
+      <h2>Design-forward products for global makers</h2>
+      <p class="lead">Curated selection inspired by modern software architecture and classic design patterns.</p>
+      <div class="hero-cta">
+        <button id="shopNow">Shop Now</button>
+        <button id="learnMore" class="ghost">Learn Arkitektura</button>
+      </div>
     </div>
   </header>
 
@@ -54,7 +59,28 @@
     </section>
 
     <section class="card products-card">
-      <h2>Featured Products</h2>
+      <div class="controls">
+        <div class="tabs">
+          <button class="tab active" data-tab="all">All</button>
+          <button class="tab" data-tab="architectures">Architectures</button>
+          <button class="tab" data-tab="patterns">Patterns</button>
+          <button class="tab" data-tab="featured">Featured</button>
+        </div>
+
+        <div class="filters">
+          <label>Arkitektura</label>
+          <select id="filterArchitecture">
+            <option value="">Any</option>
+          </select>
+
+          <label>Paternat</label>
+          <select id="filterPattern">
+            <option value="">Any</option>
+          </select>
+        </div>
+      </div>
+
+      <h2 id="productsTitle">Products</h2>
       <div id="products" class="products"></div>
     </section>
 

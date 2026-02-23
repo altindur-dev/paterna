@@ -1,0 +1,17 @@
+:root { font-family: Arial, sans-serif; color: #1f2937; }
+body { margin: 0; background: #f3f4f6; }
+.hero { background: linear-gradient(120deg, #111827, #374151); color: white; padding: 2rem; text-align: center; }
+main { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1rem; max-width: 1000px; margin: 0 auto; }
+.card { background: white; border-radius: 12px; padding: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+.tabs { display: flex; gap: .5rem; margin-bottom: 1rem; }
+.tabs button { flex: 1; padding: .5rem; border: 1px solid #d1d5db; background: #fff; cursor: pointer; }
+.tabs button.active { background: #111827; color: #fff; }
+form { display: flex; flex-direction: column; gap: .5rem; }
+input, button { padding: .65rem; border-radius: 8px; border: 1px solid #d1d5db; }
+button { background: #2563eb; color: #fff; border: none; cursor: pointer; }
+.hidden { display: none; }
+.products { display: grid; gap: .7rem; }
+.product { border: 1px solid #e5e7eb; border-radius: 10px; padding: .7rem; }
+.price { font-weight: bold; color: #2563eb; }
+#authStatus { min-height: 1.2em; }
+@media (max-width: 700px) { main { grid-template-columns: 1fr; } }

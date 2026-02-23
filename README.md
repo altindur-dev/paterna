@@ -1,38 +1,38 @@
-# Paterna - Product Landing Web (.NET Backend)
+# Paterna - Produkte Landing Web (.NET Backend)
 
-This project is a simple landing page web app that sells architecture-inspired products, with login/signup support and a .NET backend.
+Ky projekt është një aplikacion i thjeshtë web për faqe uljeje që shet produkte të frymëzuara nga arkitektura, me mbështetje për hyrje/regjistrim dhe një backend .NET.
 
-## Features
-- Product listing landing page
-- Login and signup forms
-- In-memory auth and products API
-- Static frontend served by ASP.NET Core
+## Karakteristikat
+- Faqja uljeje e listës së produkteve
+- Formularët e hyrjes dhe regjistrimit
+- API për autorizim dhe produkte në memorie
+- Frontend statik i shërbyer nga ASP.NET Core
 
-## Architecture
-This implementation follows **Hexagonal + Onion Architecture**:
+## Arkitektura
+Ky implementim ndjek **Arkitekturën Hexagonal + Onion**:
 
-- **Domain (`Paterna.Domain`)**: core entities (`Product`, `User`).
-- **Application (`Paterna.Application`)**: use-cases and ports (interfaces).
-- **Infrastructure (`Paterna.Infrastructure`)**: adapters for repositories and hashing/token mechanisms.
-- **API (`Paterna.Api`)**: delivery layer exposing HTTP endpoints and static site.
+- **Domain (`Paterna.Domain`)**: entitete kryesore (`Product`, `User`).
+- **Aplikacioni (`Paterna.Application`)**: raste përdorimi dhe porta (ndërfaqe).
+- **Infrastruktura (`Paterna.Infrastructure`)**: adaptorë për depo dhe mekanizma hashing/token.
+- **API (`Paterna.Api`)**: shtresa e shpërndarjes që ekspozon pikat fundore HTTP dhe faqen statike.
 
-### Serverless-ready path
-To move this into **Serverless Architecture**, keep Domain/Application unchanged and replace API+Infrastructure adapters with:
-- Azure Functions / AWS Lambda HTTP handlers
-- managed identity provider + database adapters
+### Shtegu i gatshëm për server
+Për ta zhvendosur këtë në **Arkitekturë pa server**, mbajeni të pandryshuar Domenin/Aplikacionin dhe zëvendësoni adaptorët API+Infrastrukturë me:
+- Funksionet Azure / trajtuesit HTTP AWS Lambda
+- ofruesin e identitetit të menaxhuar + adaptorët e bazës së të dhënave
 
-## Design Patterns used
-- **Creational**: Factory pattern via `ITokenFactory` and concrete `BasicTokenFactory`.
-- **Structural**: Adapter pattern in Infrastructure repositories implementing Application ports.
-- **Behavioral**: Strategy pattern through interchangeable `IPasswordHasher` implementations.
+## Modelet e Dizajnit të përdorura
+- **Creational**: Modeli i fabrikës nëpërmjet `ITokenFactory` dhe `BasicTokenFactory` konkret.
+- **Structural**: Modeli i adaptorit në depot e Infrastrukturës që implementojnë portet e Aplikacionit.
+- **Behavioural**: Modeli i strategjisë nëpërmjet implementimeve të këmbyeshme `IPasswordHasher`.
 
 ## API
 - `POST /api/auth/signup`
 - `POST /api/auth/login`
 - `GET /api/products`
 
-## Run
+## Ekzekutoni
 ```bash
 dotnet run --project src/Paterna.Api
 ```
-Then open `http://localhost:5000` (or shown port).
+Pastaj hapni `http://localhost:5000` (ose portin e treguar).

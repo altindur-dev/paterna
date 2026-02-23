@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "gt+S0vzCBuw=",
+  "success": true,
+  "projectFilePath": "/workspaces/paterna/src/Paterna.Infrastructure/Paterna.Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "/home/codespace/.nuget/packages/microsoft.extensions.dependencyinjection/8.0.0/microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "/home/codespace/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.0/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "/home/codespace/.nuget/packages/microsoft.netcore.app.ref/8.0.22/microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
+    "/home/codespace/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.22/microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512"
+  ],
+  "logs": []
+}

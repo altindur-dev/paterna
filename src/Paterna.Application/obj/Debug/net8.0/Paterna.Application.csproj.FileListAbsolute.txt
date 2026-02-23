@@ -1,0 +1,16 @@
+/workspaces/paterna/src/Paterna.Application/bin/Debug/net8.0/Paterna.Application.deps.json
+/workspaces/paterna/src/Paterna.Application/bin/Debug/net8.0/Paterna.Application.dll
+/workspaces/paterna/src/Paterna.Application/bin/Debug/net8.0/Paterna.Application.pdb
+/workspaces/paterna/src/Paterna.Application/bin/Debug/net8.0/Paterna.Domain.dll
+/workspaces/paterna/src/Paterna.Application/bin/Debug/net8.0/Paterna.Domain.pdb
+/workspaces/paterna/src/Paterna.Application/obj/Debug/net8.0/Paterna.Application.csproj.AssemblyReference.cache
+/workspaces/paterna/src/Paterna.Application/obj/Debug/net8.0/Paterna.Application.GeneratedMSBuildEditorConfig.editorconfig
+/workspaces/paterna/src/Paterna.Application/obj/Debug/net8.0/Paterna.Application.AssemblyInfoInputs.cache
+/workspaces/paterna/src/Paterna.Application/obj/Debug/net8.0/Paterna.Application.AssemblyInfo.cs
+/workspaces/paterna/src/Paterna.Application/obj/Debug/net8.0/Paterna.Application.csproj.CoreCompileInputs.cache
+/workspaces/paterna/src/Paterna.Application/obj/Debug/net8.0/Paterna.Application.sourcelink.json
+/workspaces/paterna/src/Paterna.Application/obj/Debug/net8.0/Paterna..A791947A.Up2Date
+/workspaces/paterna/src/Paterna.Application/obj/Debug/net8.0/Paterna.Application.dll
+/workspaces/paterna/src/Paterna.Application/obj/Debug/net8.0/refint/Paterna.Application.dll
+/workspaces/paterna/src/Paterna.Application/obj/Debug/net8.0/Paterna.Application.pdb
+/workspaces/paterna/src/Paterna.Application/obj/Debug/net8.0/ref/Paterna.Application.dll

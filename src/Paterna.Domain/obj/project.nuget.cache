@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "m4ID5Fzs0RA=",
+  "success": true,
+  "projectFilePath": "/workspaces/paterna/src/Paterna.Domain/Paterna.Domain.csproj",
+  "expectedPackageFiles": [
+    "/home/codespace/.nuget/packages/microsoft.netcore.app.ref/8.0.22/microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
+    "/home/codespace/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.22/microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512"
+  ],
+  "logs": []
+}

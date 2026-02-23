@@ -8,8 +8,25 @@
 </head>
 <body>
   <header class="hero">
-    <h1>Paterna Store</h1>
-    <p>Architecture-inspired products for modern makers.</p>
+    <nav class="nav">
+      <div class="brand">
+        <h1>Paterna</h1>
+        <small>Global Products</small>
+      </div>
+      <div class="nav-actions">
+        <label for="currency">Currency</label>
+        <select id="currency">
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+        </select>
+        <button id="cartBtn">Cart (<span id="cartCount">0</span>)</button>
+      </div>
+    </nav>
+    <div class="hero-content">
+      <h2>Paterna Store</h2>
+      <p>Architecture-inspired products for modern makers — shipping worldwide.</p>
+    </div>
   </header>
 
   <main>
@@ -36,10 +53,20 @@
       <p id="authStatus"></p>
     </section>
 
-    <section class="card">
+    <section class="card products-card">
       <h2>Featured Products</h2>
       <div id="products" class="products"></div>
     </section>
+
+    <aside id="cart" class="cart hidden">
+      <h3>Your Cart</h3>
+      <div id="cartItems" class="cart-items"></div>
+      <div class="cart-footer">
+        <div class="total">Total: <span id="cartTotal">$0.00</span></div>
+        <button id="checkout">Checkout</button>
+      </div>
+      <button id="closeCart" class="close-cart">Close</button>
+    </aside>
   </main>
 
   <script src="app.js"></script>

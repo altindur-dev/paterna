@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Paterna.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c51158b38644bd389363d0753be454471530d6c9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4a58bb547375672844118cbccdce7c35b0737ea6")]
 [assembly: System.Reflection.AssemblyProductAttribute("Paterna.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Paterna.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
